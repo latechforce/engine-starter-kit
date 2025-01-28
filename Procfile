@@ -1,1 +1,1 @@
-web: bun run dist/start.js
+web: bun run ./dist/start.js
