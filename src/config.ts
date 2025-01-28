@@ -3,7 +3,7 @@ import env from "./env";
 import { helloWorld } from "./automations/helloWorld";
 
 const config: Config = {
-  name: "App Template",
+  name: "App Starter",
   automations: [helloWorld],
   server: {
     port: env.PORT,

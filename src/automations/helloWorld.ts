@@ -16,7 +16,7 @@ export const helloWorld: Automation = {
       action: "RunTypescript",
       name: "runJavascriptCode",
       code: String(async function () {
-        return { message: `Hello world!` };
+        return { message: "Hello world!" };
       }),
     },
   ],

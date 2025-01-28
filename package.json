@@ -1,5 +1,5 @@
 {
-  "name": "app-template",
+  "name": "app-started",
   "module": "src/start.ts",
   "type": "module",
   "scripts": {
