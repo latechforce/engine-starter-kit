@@ -1,1 +1,1 @@
-web: bun run src/start.ts
+web: bun run dist/start.js
