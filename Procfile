@@ -1,1 +1,1 @@
-web: bun ./src/start.ts
+web: bun run src/start.ts
