@@ -1,7 +1,7 @@
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV } = process.env
 
-if (!PORT) throw new Error("PORT is required");
+if (!PORT) throw new Error('PORT is required')
 
-const env = { PORT, NODE_ENV };
+const env = { PORT, NODE_ENV }
 
-export default env;
+export default env

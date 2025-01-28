@@ -1,23 +1,23 @@
-import type { Automation } from "@latechforce/engine";
+import type { Automation } from '@latechforce/engine'
 
 export const helloWorld: Automation = {
-  name: "helloWorld",
+  name: 'helloWorld',
   trigger: {
-    service: "Http",
-    event: "ApiCalled",
-    path: "hello-world",
+    service: 'Http',
+    event: 'ApiCalled',
+    path: 'hello-world',
     output: {
-      message: "{{runJavascriptCode.message}}",
+      message: '{{runJavascriptCode.message}}',
     },
   },
   actions: [
     {
-      service: "Code",
-      action: "RunTypescript",
-      name: "runJavascriptCode",
+      service: 'Code',
+      action: 'RunTypescript',
+      name: 'runJavascriptCode',
       code: String(async function () {
-        return { message: "Hello world!" };
+        return { message: 'Hello world!' }
       }),
     },
   ],
-};
+}
