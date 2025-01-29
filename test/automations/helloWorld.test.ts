@@ -5,7 +5,7 @@ import config from '@config'
 const helpers = new Helpers(Tester)
 
 helpers.testWithMockedApp({}, ({ app, request }) => {
-  describe('call API', () => {
+  describe('on POST', () => {
     it('should return a "Hello World!" message', async () => {
       // GIVEN
       const { url } = await app.start(config)

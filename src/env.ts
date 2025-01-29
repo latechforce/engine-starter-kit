@@ -1,4 +1,4 @@
-const { PORT, NODE_ENV } = process.env
+const { PORT, NODE_ENV = 'development' } = process.env
 
 if (!PORT) throw new Error('PORT is required')
 
