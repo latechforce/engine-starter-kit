@@ -13,11 +13,13 @@ const config: Config = {
 }
 
 switch (env.NODE_ENV) {
-  case 'development':
-    config.loggers?.push({ driver: 'Console', level: 'info' })
+  case 'test':
     break
   case 'production':
     config.loggers?.push({ driver: 'Console', level: 'http' })
+    break
+  default:
+    config.loggers?.push({ driver: 'Console', level: 'info' })
     break
 }
 
