@@ -1,15 +1,20 @@
-import { describe, it, expect } from 'bun:test'
-import { MockedApp, config, request } from '../helpers'
+import Tester, { describe, it, expect } from 'bun:test'
+import { Helpers } from '@latechforce/engine/bun/test'
+import config from '@config'
 
-describe('call API', () => {
-  it('should return a "Hello World!" message', async () => {
-    // GIVEN
-    const { url } = await new MockedApp().start(config)
+const helpers = new Helpers(Tester)
 
-    // WHEN
-    const response = await request(`${url}/api/automation/hello-world`)
+helpers.testWithMockedApp({}, ({ app, request }) => {
+  describe('call API', () => {
+    it('should return a "Hello World!" message', async () => {
+      // GIVEN
+      const { url } = await app.start(config)
 
-    // THEN
-    expect(response.message).toBe('Hello world!')
+      // WHEN
+      const response = await request.post(`${url}/api/automation/hello-world`)
+
+      // THEN
+      expect(response.message).toBe('Hello world!')
+    })
   })
 })

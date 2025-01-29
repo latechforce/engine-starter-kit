@@ -9,7 +9,16 @@ const config: Config = {
     port: env.PORT,
   },
   monitors: [{ driver: 'Console' }],
-  loggers: [{ driver: 'Console', level: 'info' }],
+  loggers: [],
+}
+
+switch (env.NODE_ENV) {
+  case 'development':
+    config.loggers?.push({ driver: 'Console', level: 'info' })
+    break
+  case 'production':
+    config.loggers?.push({ driver: 'Console', level: 'http' })
+    break
 }
 
 export default config
