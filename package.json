@@ -22,6 +22,6 @@
     "@latechforce/engine": "latest"
   },
   "engines": {
-    "bun": "1.2.1"
+    "bun": "1.2.2"
   }
 }
