@@ -4,6 +4,7 @@ import { helloWorld } from './automations/helloWorld'
 
 const config: Config = {
   name: 'App Starter',
+  version: '1.0.0',
   automations: [helloWorld],
   server: {
     port: env.PORT,
