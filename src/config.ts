@@ -1,11 +1,11 @@
 import type { Config } from '@latechforce/engine'
 import env from './env'
-import { helloWorld } from './automations/helloWorld'
+import { hello } from './automations/hello'
 
 const config: Config = {
   name: 'App Starter',
   version: '1.0.0',
-  automations: [helloWorld],
+  automations: [hello],
   server: {
     port: env.PORT,
   },

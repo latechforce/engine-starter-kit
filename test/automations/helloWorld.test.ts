@@ -6,12 +6,14 @@ const helpers = new Helpers(Tester)
 
 helpers.testWithMockedApp({}, ({ app, request }) => {
   describe('on POST', () => {
-    it('should return a "Hello World!" message', async () => {
+    it('should return a "Hello world!" message', async () => {
       // GIVEN
       const { url } = await app.start(config)
 
       // WHEN
-      const response = await request.post(`${url}/api/automation/hello-world`)
+      const response = await request.post(`${url}/api/automation/hello`, {
+        name: 'world',
+      })
 
       // THEN
       expect(response.message).toBe('Hello world!')
