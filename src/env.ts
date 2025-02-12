@@ -1,7 +1,5 @@
-const { PORT, NODE_ENV = 'development' } = process.env
+const { PORT = '3000', NODE_ENV = 'development', DATABASE_URL = './data/db.sqlite' } = process.env
 
-if (!PORT) throw new Error('PORT is required')
-
-const env = { PORT, NODE_ENV }
+const env = { PORT, NODE_ENV, DATABASE_URL }
 
 export default env

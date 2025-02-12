@@ -4,16 +4,16 @@
   "type": "module",
   "scripts": {
     "lint": "prettier --write .",
-    "dev": "bun run src/start.ts --watch",
-    "start": "bun run src/start.ts",
     "test": "bun test --bail",
+    "dev": "bun run src/start.ts --watch",
     "build": "bun build --entrypoints ./src/start.ts --outdir ./dist --target bun --packages external",
+    "start": "bun run src/start.ts",
     "prepare": "husky"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "husky": "^9.1.7",
-    "prettier": "^3.4.2"
+    "prettier": "^3.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.7.3"
