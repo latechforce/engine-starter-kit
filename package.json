@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "prettier --write .",
     "test": "bun test --bail",
-    "dev": "bun run src/start.ts --watch",
+    "dev": "bun --watch run src/start.ts",
     "build": "bun build --entrypoints ./src/start.ts --outdir ./dist --target bun --packages external",
     "start": "bun run src/start.ts",
     "prepare": "husky"
