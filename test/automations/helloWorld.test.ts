@@ -1,6 +1,6 @@
 import Tester, { describe, it, expect } from 'bun:test'
 import { Helpers } from '@latechforce/engine/bun/test'
-import config from '@config'
+import config from '/config'
 
 const helpers = new Helpers(Tester)
 

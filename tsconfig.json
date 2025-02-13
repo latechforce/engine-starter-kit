@@ -26,7 +26,10 @@
 
     "baseUrl": "src",
     "paths": {
-      "@config": ["config"]
+      "/config": ["config"],
+      "/env": ["env"],
+      "/tables/*": ["tables/*"],
+      "/automations/*": ["automations/*"]
     }
   }
 }

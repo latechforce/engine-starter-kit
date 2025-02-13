@@ -1,6 +1,6 @@
 import type { Config } from '@latechforce/engine'
-import env from './env'
-import { hello } from './automations/hello'
+import env from '/env'
+import { hello } from '/automations/hello'
 
 const config: Config = {
   name: 'App Starter',
