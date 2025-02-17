@@ -36,7 +36,7 @@ and ESLint.
 
 ## How to Update
 
-- `bun upgrade` — Bump Yarn to the latest version
+- `bun upgrade` — Bump Bun to the latest version
 - `bun update` — Update Node.js modules (dependencies)
 
 ## License
