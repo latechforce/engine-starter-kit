@@ -8,17 +8,15 @@
     "test": "bun test --bail",
     "dev": "bun --watch run src/start.ts",
     "build": "bun build --entrypoints ./src/start.ts --outdir ./dist --target bun --packages external",
-    "start": "bun run src/start.ts",
-    "prepare": "husky"
+    "start": "bun run src/start.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
     "@types/bun": "latest",
     "eslint": "^9.20.1",
     "globals": "^15.15.0",
-    "husky": "^9.1.7",
     "prettier": "^3.5.1",
-    "typescript-eslint": "^8.24.0"
+    "typescript-eslint": "^8.24.1"
   },
   "peerDependencies": {
     "typescript": "^5.7.3"
