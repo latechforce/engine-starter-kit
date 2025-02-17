@@ -22,13 +22,15 @@ switch (env.NODE_ENV) {
     }
     break
   case 'production':
-    config.loggers?.push({ driver: 'Console', level: 'http' })
-    config.database = {
-      driver: 'PostgreSQL',
-      url: env.DATABASE_URL,
-    }
-    config.server = {
-      port: env.PORT,
+    if (!process.env.CI) {
+      config.loggers?.push({ driver: 'Console', level: 'http' })
+      config.database = {
+        driver: 'PostgreSQL',
+        url: env.DATABASE_URL,
+      }
+      config.server = {
+        port: env.PORT,
+      }
     }
     break
 }
