@@ -1,5 +1,5 @@
 {
-  "name": "app-started",
+  "name": "engine-stater-kit",
   "module": "src/start.ts",
   "type": "module",
   "scripts": {

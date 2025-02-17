@@ -3,7 +3,7 @@ import env from '/env'
 import { hello } from '/automations/hello'
 
 const config: Config = {
-  name: 'App Starter',
+  name: 'Engine Starter Kit',
   version: '1.0.0',
   automations: [hello],
   monitors: [{ driver: 'Console' }],
