@@ -14,8 +14,8 @@ from this template, clone it, install project dependencies, create an
 environment variables file `.env`, and start hacking:
 
 ```
-$ git clone https://github.com/latechforce/engine-starter-kit.git
-$ cd ./engine-starter-kit
+$ git clone https://github.com/latechforce/engine-starter-kit.git example
+$ cd ./example
 $ bun install
 $ bun run dev
 ```
