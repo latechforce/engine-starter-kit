@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "test": "bun test --bail",
     "dev": "bun --watch run src/start.ts",
     "build": "bun build --entrypoints ./src/start.ts --outdir ./dist --target bun --packages external",
