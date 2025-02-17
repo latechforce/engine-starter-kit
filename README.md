@@ -22,6 +22,8 @@ $ bun run dev
 
 The app will become available at [http://localhost:3000/](http://localhost:3000/) (press `q` + `Enter` to exit).
 
+You can find the Open API documentation at [`http://localhost:3000/api/docs`](http://localhost:3000/api/docs) (press `q` + `Enter` to exit).
+
 **IMPORTANT**: Ensure that VSCode is using the workspace [version of TypeScript](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-newer-typescript-versions)
 and ESLint.
 
