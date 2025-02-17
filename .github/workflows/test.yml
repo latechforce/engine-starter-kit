@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NODE_ENV: production
+      NODE_ENV: test
 
     steps:
       - uses: actions/checkout@v4
