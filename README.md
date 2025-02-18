@@ -32,8 +32,7 @@ and ESLint.
 - `bun run format` — Format the code using Prettier
 - `bun run lint` — Validate the code using ESLint
 - `bun run build` — Compiles and bundles the app for deployment
-- `bun run dev` — Launches the app in development mode on [`http://localhost:3000/`](http://localhost:3000/)
-- `bun run start` — Launches the app on [`http://localhost:3000/`](http://localhost:3000/)
+- `bun run start` — Launches the app in development mode on [`http://localhost:3000/`](http://localhost:3000/)
 - `bun run test` — Run unit tests with Bun
 
 ## How to Update
