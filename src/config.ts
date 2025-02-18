@@ -1,10 +1,11 @@
 import type { Config } from '@latechforce/engine'
+import pkg from '../package.json'
 import env from '/env'
 import { hello } from '/automations/hello'
 
 const config: Config = {
   name: 'Engine Starter Kit',
-  version: '1.0.0',
+  version: pkg.version,
   automations: [hello],
   monitors: [{ driver: 'Console' }],
   loggers: [],

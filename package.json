@@ -1,5 +1,6 @@
 {
-  "name": "engine-stater-kit",
+  "name": "engine-starter-kit",
+  "version": "1.0.0",
   "module": "src/start.ts",
   "type": "module",
   "scripts": {
