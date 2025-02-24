@@ -17,7 +17,7 @@ environment variables file `.env`, and start hacking:
 $ git clone https://github.com/latechforce/engine-starter-kit.git example
 $ cd ./example
 $ bun install
-$ bun run dev
+$ bun run start
 ```
 
 The app will become available at [`http://localhost:3000/`](http://localhost:3000/) (press `q` + `Enter` to exit).
