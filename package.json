@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "module": "src/start.ts",
   "type": "module",
+  "license": "Fair Use License",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --fix",
