@@ -4,8 +4,7 @@ Generate backend from a JSON configuration with [La Tech Force Engine](https://g
 
 ## Requirements
 
-- [Bun](https://bun.sh/) v1.2.2
-- [VS Code](https://code.visualstudio.com/) editor
+- [Bun](https://bun.sh/) v1.2 or later
 
 ## Getting Started
 
