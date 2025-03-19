@@ -1,6 +1,6 @@
 # Engine Starter Kit
 
-Generate backend from a JSON configuration with [La Tech Force Engine](https://github.com/latechforce/engine).
+Generate backend from a JSON configuration with [Engine by La Tech Force](https://github.com/latechforce/engine).
 
 ## Requirements
 
