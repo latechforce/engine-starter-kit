@@ -1,10 +1,10 @@
 import Tester, { describe, it, expect } from 'bun:test'
-import { Helpers } from '@latechforce/engine/bun/test'
+import { Mock } from '@latechforce/engine/bun/test'
 import config from '/config'
 
-const helpers = new Helpers(Tester)
+const mock = new Mock(Tester)
 
-helpers.testWithMockedApp({}, ({ app, request }) => {
+mock.request(({ app, request }) => {
   describe('on POST', () => {
     it('should return a "Hello world!" message', async () => {
       // GIVEN
