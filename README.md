@@ -26,6 +26,51 @@ You can find the Open API documentation at [`http://localhost:3000/api/docs`](ht
 **IMPORTANT**: Ensure that VSCode is using the workspace [version of TypeScript](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-newer-typescript-versions)
 and ESLint.
 
+## Deployment
+
+The project is configured to be deployed to [Scalingo](https://sclng.io/r/270b5ab212db4ba4?utm_source=scalingo&utm_medium=email&utm_campaign=referral) using GitHub Actions.
+
+You can create a Scalingo account using our [referral link](https://sclng.io/r/270b5ab212db4ba4?utm_source=scalingo&utm_medium=email&utm_campaign=referral).
+
+## How to Release
+
+The project is configured to be released on Github with semantic commit messages.
+
+### Setup Github Actions
+
+You need to setup the `GH_TOKEN` environment variable in the repository settings in actions secrets.
+
+### Semantic Commit Messages
+
+For examples:
+
+```
+chore(release): update dependencies
+```
+
+This will run the tests and stay on the same version v1.0.0.
+
+```
+fix(release): fix release
+```
+
+This will run the tests and create a new release on GitHub with the next version v1.0.1.
+
+```
+feat(release): add new feature
+```
+
+This will run the tests and create a new release on GitHub with the next version v1.1.0.
+
+```
+BREAKING CHANGE: add new feature
+```
+
+This will run the tests and create a new release on GitHub with the next version v2.0.0.
+
+
+More information about semantic commit messages can be found [here](https://semantic-release.gitbook.io/semantic-release).
+
 ## Scripts
 
 - `bun run format` — Format the code using Prettier
