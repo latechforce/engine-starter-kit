@@ -9,8 +9,7 @@ Build a web application from a JSON configuration with [Engine by La Tech Force]
 ## Getting Started
 
 [Generate](https://github.com/latechforce/engine-starter-kit/generate) a new project
-from this template, clone it, install project dependencies, create an
-environment variables file `.env`, and start hacking:
+from this template, clone it, install project dependencies, and start hacking:
 
 ```
 $ git clone https://github.com/latechforce/engine-starter-kit.git example
