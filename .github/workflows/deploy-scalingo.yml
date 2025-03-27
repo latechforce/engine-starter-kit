@@ -11,6 +11,7 @@ env:
 
 jobs:
   deploy:
+    name: Deploy to Scalingo
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +27,7 @@ jobs:
       - name: Get app name from package.json
         id: get-app-name
         run: |
-          APP_NAME=$(bun run -c "console.log(require('./package.json').name)")
+          APP_NAME=$(bun -e "console.log(require('./package.json').name)")
           echo "APP_NAME=$APP_NAME" >> $GITHUB_OUTPUT
 
       - name: Check if app exists on Scalingo
