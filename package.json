@@ -1,6 +1,6 @@
 {
   "name": "engine-starter-kit",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "module": "src/start.ts",
   "type": "module",
   "license": "Fair Use License",
