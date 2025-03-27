@@ -214,7 +214,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ./engine.config.json
-          git commit -m "chore: update engine config" || exit 0
+          git commit -m "chore: update engine config [skip ci]" || exit 0
           git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
       - name: Restart app if app exists
