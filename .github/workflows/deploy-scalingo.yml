@@ -39,14 +39,28 @@ jobs:
       - name: Check if app exists on Scalingo
         id: check-app
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" \
+          # Get the full response for debugging
+          response=$(curl -s \
             -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
             "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}")
 
-          if [ "$response" = "404" ]; then
+          # Get the status code
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}")
+
+          echo "Status code: $status_code"
+          echo "Response: $response"
+
+          if [ "$status_code" = "404" ]; then
+            echo "App does not exist (404)"
             echo "APP_EXISTS=false" >> $GITHUB_OUTPUT
-          else
+          elif [ "$status_code" = "200" ]; then
+            echo "App exists (200)"
             echo "APP_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "Unexpected status code: $status_code"
+            echo "APP_EXISTS=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create app if it doesn't exist
@@ -92,81 +106,20 @@ jobs:
               ]
             }"
 
-      - name: Get current package version
-        id: get-version
-        run: |
-          CURRENT_VERSION=$(bun -e "console.log(require('./package.json').dependencies['@latechforce/engine'])")
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Get deployed version
-        id: get-deployed-version
-        run: |
-          # Get deployments and store response
-          DEPLOYMENTS_RESPONSE=$(curl -s \
-            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
-            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments")
-
-          # Debug: Print response (without sensitive data)
-          echo "Deployments response: $(echo "$DEPLOYMENTS_RESPONSE" | jq -r '.')"
-
-          # Check if response is empty or invalid
-          if [ -z "$DEPLOYMENTS_RESPONSE" ] || [ "$DEPLOYMENTS_RESPONSE" = "null" ]; then
-            echo "No deployments found"
-            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Get the first deployment's git_ref
-          DEPLOYED_VERSION=$(echo "$DEPLOYMENTS_RESPONSE" | jq -r '.deployments[0].git_ref // empty')
-
-          if [ -z "$DEPLOYED_VERSION" ]; then
-            echo "No deployment version found"
-            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Get package.json from the deployment
-          PACKAGE_JSON_RESPONSE=$(curl -s \
-            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
-            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments/$DEPLOYED_VERSION/package.json")
-
-          # Debug: Print package.json response (without sensitive data)
-          echo "Package.json response: $(echo "$PACKAGE_JSON_RESPONSE" | jq -r '.')"
-
-          # Extract engine version
-          DEPLOYED_PACKAGE_VERSION=$(echo "$PACKAGE_JSON_RESPONSE" | jq -r '.dependencies["@latechforce/engine"] // empty')
-
-          if [ -z "$DEPLOYED_PACKAGE_VERSION" ]; then
-            echo "No engine version found in package.json"
-            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          echo "DEPLOYED_VERSION=$DEPLOYED_PACKAGE_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Check if version changed
-        id: check-version
-        run: |
-          if [ "${{ steps.get-version.outputs.CURRENT_VERSION }}" != "${{ steps.get-deployed-version.outputs.DEPLOYED_VERSION }}" ]; then
-            echo "VERSION_CHANGED=true" >> $GITHUB_OUTPUT
-          else
-            echo "VERSION_CHANGED=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Deploy if version changed
-        if: steps.check-version.outputs.VERSION_CHANGED == 'true'
+      - name: Deploy if app doesn't exist
+        if: steps.check-app.outputs.APP_EXISTS == 'false'
         run: |
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
             "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments" \
             -d "{\"git_ref\": \"${{ github.sha }}\"}"
 
-      - name: Run build:config if version unchanged
-        if: steps.check-version.outputs.VERSION_CHANGED == 'false'
+      - name: Run build:config if app exists
+        if: steps.check-app.outputs.APP_EXISTS == 'true'
         run: bun run build:config
 
       - name: Commit config changes
-        if: steps.check-version.outputs.VERSION_CHANGED == 'false'
+        if: steps.check-app.outputs.APP_EXISTS == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -174,8 +127,8 @@ jobs:
           git commit -m "chore: update engine config" || exit 0
           git push
 
-      - name: Restart app if version unchanged
-        if: steps.check-version.outputs.VERSION_CHANGED == 'false'
+      - name: Restart app if app exists
+        if: steps.check-app.outputs.APP_EXISTS == 'true'
         run: |
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
