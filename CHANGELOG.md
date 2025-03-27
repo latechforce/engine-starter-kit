@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/latechforce/engine-starter-kit/compare/v1.0.8...v1.0.9) (2025-03-27)
+
+
+### Bug Fixes
+
+* CI ([049f4a2](https://github.com/latechforce/engine-starter-kit/commit/049f4a2a47f550466e161640a52a3be38afa85b2))
+
 ## [1.0.8](https://github.com/latechforce/engine-starter-kit/compare/v1.0.7...v1.0.8) (2025-03-27)
 
 
