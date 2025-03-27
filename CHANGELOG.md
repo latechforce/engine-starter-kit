@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/latechforce/engine-starter-kit/compare/v1.0.6...v1.0.7) (2025-03-27)
+
+
+### Bug Fixes
+
+* add scalingo deployment ([b6dab15](https://github.com/latechforce/engine-starter-kit/commit/b6dab15c39c6495ee24948da80c7be1bd3f6f067))
+
 ## [1.0.6](https://github.com/latechforce/engine-starter-kit/compare/v1.0.5...v1.0.6) (2025-03-27)
 
 
