@@ -31,7 +31,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@latechforce/engine": "latest"
+    "@latechforce/engine": "^0.38.14"
   },
   "engines": {
     "bun": "1.2.5"
