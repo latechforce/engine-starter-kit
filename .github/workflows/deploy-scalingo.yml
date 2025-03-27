@@ -10,6 +10,10 @@ env:
   SCALINGO_API_URL: https://api.osc-fr1.scalingo.com/v1
   SCALINGO_AUTH_URL: https://auth.scalingo.com/v1
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   deploy:
     name: Deploy to Scalingo
