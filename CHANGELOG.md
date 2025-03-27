@@ -1,3 +1,10 @@
+## [1.0.10](https://github.com/latechforce/engine-starter-kit/compare/v1.0.9...v1.0.10) (2025-03-27)
+
+
+### Bug Fixes
+
+* use Github API instead of Github CDN for config fetching ([f90e005](https://github.com/latechforce/engine-starter-kit/commit/f90e005da0286e4ac8acab42dacf7bbd02c61651))
+
 ## [1.0.9](https://github.com/latechforce/engine-starter-kit/compare/v1.0.8...v1.0.9) (2025-03-27)
 
 
