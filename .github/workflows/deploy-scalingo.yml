@@ -1,10 +1,16 @@
 name: Deploy to Scalingo
 
+#on:
+#  workflow_run:
+#    workflows: ['Release']
+#    types:
+#      - completed
+
 on:
-  workflow_run:
-    workflows: ['Release']
-    types:
-      - completed
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
 
 env:
   SCALINGO_API_URL: https://api.osc-fr1.scalingo.com/v1
@@ -95,16 +101,46 @@ jobs:
       - name: Get deployed version
         id: get-deployed-version
         run: |
-          DEPLOYED_VERSION=$(curl -s \
+          # Get deployments and store response
+          DEPLOYMENTS_RESPONSE=$(curl -s \
             -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
-            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments" | \
-            jq -r '.deployments[0].git_ref')
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments")
 
-          # Get the package.json from the deployed version
-          DEPLOYED_PACKAGE_VERSION=$(curl -s \
+          # Debug: Print response (without sensitive data)
+          echo "Deployments response: $(echo "$DEPLOYMENTS_RESPONSE" | jq -r '.')"
+
+          # Check if response is empty or invalid
+          if [ -z "$DEPLOYMENTS_RESPONSE" ] || [ "$DEPLOYMENTS_RESPONSE" = "null" ]; then
+            echo "No deployments found"
+            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Get the first deployment's git_ref
+          DEPLOYED_VERSION=$(echo "$DEPLOYMENTS_RESPONSE" | jq -r '.deployments[0].git_ref // empty')
+
+          if [ -z "$DEPLOYED_VERSION" ]; then
+            echo "No deployment version found"
+            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Get package.json from the deployment
+          PACKAGE_JSON_RESPONSE=$(curl -s \
             -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
-            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments/$DEPLOYED_VERSION/package.json" | \
-            jq -r '.dependencies["@latechforce/engine"]')
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments/$DEPLOYED_VERSION/package.json")
+
+          # Debug: Print package.json response (without sensitive data)
+          echo "Package.json response: $(echo "$PACKAGE_JSON_RESPONSE" | jq -r '.')"
+
+          # Extract engine version
+          DEPLOYED_PACKAGE_VERSION=$(echo "$PACKAGE_JSON_RESPONSE" | jq -r '.dependencies["@latechforce/engine"] // empty')
+
+          if [ -z "$DEPLOYED_PACKAGE_VERSION" ]; then
+            echo "No engine version found in package.json"
+            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
           echo "DEPLOYED_VERSION=$DEPLOYED_PACKAGE_VERSION" >> $GITHUB_OUTPUT
 
