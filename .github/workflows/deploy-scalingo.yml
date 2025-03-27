@@ -40,25 +40,40 @@ jobs:
       - name: Get Bearer Token
         id: get-bearer-token
         run: |
-          BEARER_TOKEN=$(curl -s \
+          # Get the Bearer token
+          BEARER_TOKEN_RESPONSE=$(curl -s \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -u ":${{ secrets.SCALINGO_API_TOKEN }}" \
-            -X POST "${{ env.SCALINGO_AUTH_URL }}/tokens/exchange" | \
-            jq -r '.token')
+            -X POST "${{ env.SCALINGO_AUTH_URL }}/tokens/exchange")
+
+          echo "Bearer token response: $BEARER_TOKEN_RESPONSE"
+
+          # Extract the token
+          BEARER_TOKEN=$(echo "$BEARER_TOKEN_RESPONSE" | jq -r '.token')
+
+          if [ -z "$BEARER_TOKEN" ] || [ "$BEARER_TOKEN" = "null" ]; then
+            echo "Failed to get Bearer token"
+            exit 1
+          fi
 
           echo "BEARER_TOKEN=$BEARER_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Check if app exists on Scalingo
         id: check-app
         run: |
+          # Debug: Print the Bearer token (first few characters)
+          echo "Using Bearer token: ${BEARER_TOKEN:0:10}..."
+
           # Get the full response for debugging
           response=$(curl -s \
+            -H "Accept: application/json" \
             -H "Authorization: Bearer ${{ steps.get-bearer-token.outputs.BEARER_TOKEN }}" \
             "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}")
 
           # Get the status code
           status_code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Accept: application/json" \
             -H "Authorization: Bearer ${{ steps.get-bearer-token.outputs.BEARER_TOKEN }}" \
             "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}")
 
