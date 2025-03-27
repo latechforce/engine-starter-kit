@@ -114,6 +114,12 @@ jobs:
               }
             }'
 
+      - name: Get current package version
+        id: get-version
+        run: |
+          CURRENT_VERSION=$(bun -e "console.log(require('./package.json').dependencies['@latechforce/engine'])")
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
       - name: Set environment variables
         if: steps.check-app.outputs.APP_EXISTS == 'false'
         run: |
@@ -130,12 +136,45 @@ jobs:
                 {
                   \"name\": \"GH_ENGINE_CONFIG_URL\",
                   \"value\": \"${{ github.server_url }}/${{ github.repository }}/contents/engine.config.json\"
+                },
+                {
+                  \"name\": \"LTF_ENGINE_VERSION\",
+                  \"value\": \"${{ steps.get-version.outputs.CURRENT_VERSION }}\"
                 }
               ]
             }"
 
-      - name: Deploy if app doesn't exist
-        if: steps.check-app.outputs.APP_EXISTS == 'false'
+      - name: Get deployed version
+        id: get-deployed-version
+        run: |
+          # Get environment variables
+          ENV_VARS_RESPONSE=$(curl -s \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${{ steps.get-bearer-token.outputs.BEARER_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/variables")
+
+          # Extract the engine version from environment variables
+          DEPLOYED_VERSION=$(echo "$ENV_VARS_RESPONSE" | jq -r '.variables[] | select(.name == "LTF_ENGINE_VERSION") | .value')
+
+          if [ -z "$DEPLOYED_VERSION" ] || [ "$DEPLOYED_VERSION" = "null" ]; then
+            echo "No engine version found in environment variables"
+            echo "DEPLOYED_VERSION=null" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "DEPLOYED_VERSION=$DEPLOYED_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version changed
+        id: check-version
+        run: |
+          if [ "${{ steps.get-version.outputs.CURRENT_VERSION }}" != "${{ steps.get-deployed-version.outputs.DEPLOYED_VERSION }}" ]; then
+            echo "VERSION_CHANGED=true" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION_CHANGED=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy if app doesn't exist or version changed
+        if: steps.check-app.outputs.APP_EXISTS == 'false' || steps.check-version.outputs.VERSION_CHANGED == 'true'
         run: |
           curl -X POST \
             -H "Accept: application/json" \
