@@ -184,6 +184,8 @@ jobs:
 
       - name: Run build:config if app exists
         if: steps.check-app.outputs.APP_EXISTS == 'true'
+        env:
+          NODE_ENV: production
         run: bun run build:config
 
       - name: Commit config changes

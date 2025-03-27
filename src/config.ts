@@ -1,35 +1,36 @@
 import type { Config } from '@latechforce/engine'
 import pkg from '../package.json'
-import env from '/env'
 import { hello } from '/automations/hello'
 
 const config: Config = {
-  name: 'Engine Starter Kit',
+  name: pkg.name,
   version: pkg.version,
   automations: [hello],
   monitors: [{ driver: 'Console' }],
   loggers: [],
 }
 
-switch (env.NODE_ENV) {
+const { NODE_ENV = 'development' } = process.env
+
+switch (NODE_ENV) {
   case 'development':
     config.loggers?.push({ driver: 'Console', level: 'info' })
     config.database = {
       driver: 'SQLite',
-      url: env.DATABASE_URL,
+      url: '{{ env.DATABASE_URL "./data/db.sqlite" }}',
     }
     config.server = {
-      port: env.PORT,
+      port: '{{ env.PORT "3000" }}',
     }
     break
   case 'production':
     config.loggers?.push({ driver: 'Console', level: 'http' })
     config.database = {
       driver: 'PostgreSQL',
-      url: env.DATABASE_URL,
+      url: '{{ env.DATABASE_URL }}',
     }
     config.server = {
-      port: env.PORT,
+      port: '{{ env.PORT }}',
     }
     break
 }

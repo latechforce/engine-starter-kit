@@ -1,6 +1,6 @@
 {
-  "name": "Engine Starter Kit",
-  "version": "1.0.0",
+  "name": "engine-starter-kit",
+  "version": "1.0.7",
   "automations": [
     {
       "name": "hello",
@@ -44,14 +44,14 @@
   "loggers": [
     {
       "driver": "Console",
-      "level": "info"
+      "level": "http"
     }
   ],
   "database": {
-    "driver": "SQLite",
-    "url": "./data/db.sqlite"
+    "driver": "PostgreSQL",
+    "url": "{{ env.DATABASE_URL }}"
   },
   "server": {
-    "port": "3000"
+    "port": "{{ env.PORT }}"
   }
 }

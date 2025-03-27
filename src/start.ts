@@ -13,9 +13,10 @@ if (GH_ENGINE_CONFIG_URL) {
     },
   })
   if (!response.ok) {
-    console.log(`Failed to fetch config from ${GH_ENGINE_CONFIG_URL}, using default config`)
+    console.log(`Failed to fetch config from ${GH_ENGINE_CONFIG_URL}, using local config`)
     await app.start(config)
   } else {
+    console.log(`Using config from GitHub at ${GH_ENGINE_CONFIG_URL}`)
     const githubConfig = await response.json()
     await app.start(githubConfig)
   }
