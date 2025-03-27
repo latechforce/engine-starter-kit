@@ -167,6 +167,22 @@ jobs:
             echo "VERSION_CHANGED=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Update engine version if changed
+        if: steps.check-version.outputs.VERSION_CHANGED == 'true'
+        run: |
+          curl -X PUT \
+            -H "Authorization: Bearer ${{ steps.get-bearer-token.outputs.BEARER_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/variables" \
+            -d "{
+              \"variables\": [
+                {
+                  \"name\": \"LTF_ENGINE_VERSION\",
+                  \"value\": \"${{ steps.get-version.outputs.CURRENT_VERSION }}\"
+                }
+              ]
+            }"
+
       - name: Deploy if app doesn't exist or version changed
         if: steps.check-app.outputs.APP_EXISTS == 'false' || steps.check-version.outputs.VERSION_CHANGED == 'true'
         run: |
@@ -195,7 +211,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add ./engine.config.json
           git commit -m "chore: update engine config" || exit 0
-          git push "https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
       - name: Restart app if app exists
         if: steps.check-app.outputs.APP_EXISTS == 'true'
