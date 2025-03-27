@@ -31,15 +31,16 @@ The project is configured to be deployed to [Scalingo](https://sclng.io/r/270b5a
 
 You can create a Scalingo account using our [referral link](https://sclng.io/r/270b5ab212db4ba4?utm_source=scalingo&utm_medium=email&utm_campaign=referral).
 
-You have to create a new Scalingo API token to use in the repository settings in actions secrets.
-
 ### Setup Github Actions
+
+You have to create a new Scalingo API token to use in the repository settings in actions secrets.
 
 You need to setup the `GH_TOKEN` and `SCALINGO_API_TOKEN` environment variables in the repository settings in actions secrets.
 
 ### Use Semantic Commit Messages
 
 The project is configured to be released on Github with semantic commit messages.
+Each commit will trigger a new release on Github and a new deployment on Scalingo.
 
 For examples:
 
