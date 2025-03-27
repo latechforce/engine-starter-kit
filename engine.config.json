@@ -1,6 +1,6 @@
 {
   "name": "engine-starter-kit",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "automations": [
     {
       "name": "hello",
