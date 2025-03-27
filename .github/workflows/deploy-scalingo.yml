@@ -1,16 +1,10 @@
 name: Deploy to Scalingo
 
-#on:
-#  workflow_run:
-#    workflows: ['Release']
-#    types:
-#      - completed
-
 on:
-  push:
-    branches: ['main']
-  pull_request:
-    branches: ['main']
+  workflow_run:
+    workflows: ['Release']
+    types:
+      - completed
 
 env:
   SCALINGO_API_URL: https://api.osc-fr1.scalingo.com/v1
