@@ -133,7 +133,7 @@ jobs:
                 },
                 {
                   \"name\": \"GH_ENGINE_CONFIG_URL\",
-                  \"value\": \"${{ github.server_url }}/${{ github.repository }}/raw/main/engine.config.json\"
+                  \"value\": \"https://api.github.com/repos/${{ github.repository }}/contents/engine.config.json\"
                 },
                 {
                   \"name\": \"LTF_ENGINE_VERSION\",
@@ -214,7 +214,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ./engine.config.json
-          git commit -m "chore: update engine config [skip ci]" || exit 0
+          git commit -m "chore(config): build [skip ci]" || exit 0
           git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
 
       - name: Restart app if app exists
