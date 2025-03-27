@@ -1,0 +1,57 @@
+{
+  "name": "Engine Starter Kit",
+  "version": "1.0.0",
+  "automations": [
+    {
+      "name": "hello",
+      "trigger": {
+        "service": "Http",
+        "event": "ApiCalled",
+        "path": "hello",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "output": {
+          "message": "{{buildMessage.message}}"
+        }
+      },
+      "actions": [
+        {
+          "name": "buildMessage",
+          "service": "Code",
+          "action": "RunTypescript",
+          "input": {
+            "name": "{{trigger.body.name}}"
+          },
+          "code": "async function(context) {\n        const { name } = context.inputData;\n        return { message: `Hello ${name}!` };\n      }"
+        }
+      ]
+    }
+  ],
+  "monitors": [
+    {
+      "driver": "Console"
+    }
+  ],
+  "loggers": [
+    {
+      "driver": "Console",
+      "level": "info"
+    }
+  ],
+  "database": {
+    "driver": "SQLite",
+    "url": "./data/db.sqlite"
+  },
+  "server": {
+    "port": "3000"
+  }
+}

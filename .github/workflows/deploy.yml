@@ -1,0 +1,145 @@
+name: Deploy to Scalingo
+
+on:
+  workflow_run:
+    workflows: ['Release']
+    types:
+      - completed
+
+env:
+  SCALINGO_API_URL: https://api.osc-fr1.scalingo.com/v1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Get app name from package.json
+        id: get-app-name
+        run: |
+          APP_NAME=$(bun run -c "console.log(require('./package.json').name)")
+          echo "APP_NAME=$APP_NAME" >> $GITHUB_OUTPUT
+
+      - name: Check if app exists on Scalingo
+        id: check-app
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}")
+
+          if [ "$response" = "404" ]; then
+            echo "APP_EXISTS=false" >> $GITHUB_OUTPUT
+          else
+            echo "APP_EXISTS=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create app if it doesn't exist
+        if: steps.check-app.outputs.APP_EXISTS == 'false'
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "${{ env.SCALINGO_API_URL }}/apps" \
+            -d "{\"name\": \"${{ steps.get-app-name.outputs.APP_NAME }}\"}"
+
+      - name: Add PostgreSQL addon if app was created
+        if: steps.check-app.outputs.APP_EXISTS == 'false'
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/addons" \
+            -d '{
+              "addon_provider": {
+                "provider_id": "postgresql",
+                "plan": "postgresql-sandbox"
+              }
+            }'
+
+      - name: Set environment variables
+        if: steps.check-app.outputs.APP_EXISTS == 'false'
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/variables" \
+            -d "{
+              \"variables\": [
+                {
+                  \"name\": \"GH_TOKEN\",
+                  \"value\": \"${{ secrets.GH_TOKEN }}\"
+                },
+                {
+                  \"name\": \"GH_ENGINE_CONFIG_URL\",
+                  \"value\": \"${{ github.server_url }}/${{ github.repository }}/raw/main/engine.config.json\"
+                }
+              ]
+            }"
+
+      - name: Get current package version
+        id: get-version
+        run: |
+          CURRENT_VERSION=$(bun run -c "console.log(require('./package.json').dependencies['@latechforce/engine'])")
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get deployed version
+        id: get-deployed-version
+        run: |
+          DEPLOYED_VERSION=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments" | \
+            jq -r '.deployments[0].git_ref')
+
+          # Get the package.json from the deployed version
+          DEPLOYED_PACKAGE_VERSION=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments/$DEPLOYED_VERSION/package.json" | \
+            jq -r '.dependencies["@latechforce/engine"]')
+
+          echo "DEPLOYED_VERSION=$DEPLOYED_PACKAGE_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version changed
+        id: check-version
+        run: |
+          if [ "${{ steps.get-version.outputs.CURRENT_VERSION }}" != "${{ steps.get-deployed-version.outputs.DEPLOYED_VERSION }}" ]; then
+            echo "VERSION_CHANGED=true" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION_CHANGED=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy if version changed
+        if: steps.check-version.outputs.VERSION_CHANGED == 'true'
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/deployments" \
+            -d "{\"git_ref\": \"${{ github.sha }}\"}"
+
+      - name: Run build:config if version unchanged
+        if: steps.check-version.outputs.VERSION_CHANGED == 'false'
+        run: bun run build:config
+
+      - name: Commit config changes
+        if: steps.check-version.outputs.VERSION_CHANGED == 'false'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ./engine.config.json
+          git commit -m "chore: update engine config" || exit 0
+          git push
+
+      - name: Restart app if version unchanged
+        if: steps.check-version.outputs.VERSION_CHANGED == 'false'
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SCALINGO_API_TOKEN }}" \
+            "${{ env.SCALINGO_API_URL }}/apps/${{ steps.get-app-name.outputs.APP_NAME }}/restart"

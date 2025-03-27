@@ -10,6 +10,7 @@
     "lint": "eslint . --fix",
     "test": "bun test --bail",
     "build": "bun build --entrypoints ./src/start.ts --outdir ./dist --target bun --packages external",
+    "build:config": "bun scripts/build-config.ts",
     "start": "bun --watch run src/start.ts"
   },
   "devDependencies": {
