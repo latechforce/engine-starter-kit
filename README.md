@@ -25,21 +25,21 @@ You can find the Open API documentation at [`http://localhost:3000/api/docs`](ht
 **IMPORTANT**: Ensure that VSCode is using the workspace [version of TypeScript](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-newer-typescript-versions)
 and ESLint.
 
-## Deployment
+## How to Deployment
 
 The project is configured to be deployed to [Scalingo](https://sclng.io/r/270b5ab212db4ba4?utm_source=scalingo&utm_medium=email&utm_campaign=referral) using GitHub Actions.
 
 You can create a Scalingo account using our [referral link](https://sclng.io/r/270b5ab212db4ba4?utm_source=scalingo&utm_medium=email&utm_campaign=referral).
 
-## How to Release
-
-The project is configured to be released on Github with semantic commit messages.
+You have to create a new Scalingo API token to use in the repository settings in actions secrets.
 
 ### Setup Github Actions
 
-You need to setup the `GH_TOKEN` environment variable in the repository settings in actions secrets.
+You need to setup the `GH_TOKEN` and `SCALINGO_API_TOKEN` environment variables in the repository settings in actions secrets.
 
-### Semantic Commit Messages
+### Use Semantic Commit Messages
+
+The project is configured to be released on Github with semantic commit messages.
 
 For examples:
 
