@@ -138,6 +138,10 @@ jobs:
                 {
                   \"name\": \"LTF_ENGINE_VERSION\",
                   \"value\": \"${{ steps.get-version.outputs.CURRENT_VERSION }}\"
+                },
+                {
+                  \"name\": \"TMP_DIR\",
+                  \"value\": \"/app/tmp\"
                 }
               ]
             }"

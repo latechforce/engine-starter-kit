@@ -32,6 +32,10 @@ switch (NODE_ENV) {
     config.server = {
       port: '{{ env.PORT }}',
     }
+    config.theme = {
+      type: 'tailwindcss',
+      tmpDir: '{{ env.TMP_DIR }}',
+    }
     break
 }
 
