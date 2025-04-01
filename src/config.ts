@@ -34,7 +34,6 @@ switch (NODE_ENV) {
     }
     config.theme = {
       type: 'tailwindcss',
-      tmpDir: '{{ env.TMP_DIR }}',
     }
     break
 }
