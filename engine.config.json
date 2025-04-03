@@ -1,6 +1,6 @@
 {
   "name": "engine-starter-kit",
-  "version": "1.0.0",
+  "version": "1.0.11",
   "automations": [
     {
       "name": "hello",
@@ -55,7 +55,6 @@
     "port": "{{ env.PORT }}"
   },
   "theme": {
-    "type": "tailwindcss",
-    "tmpDir": "{{ env.TMP_DIR }}"
+    "type": "tailwindcss"
   }
 }
